@@ -2,6 +2,9 @@
   "name": "blurp",
   "module": "lib/index.ts",
   "type": "module",
+  "scripts": {
+    "openapi": "bunx openapi-typescript https://raw.githubusercontent.com/discord/discord-api-spec/main/specs/openapi.json -o ./lib/api.d.ts"
+  },
   "exports": {
     "default": "./lib/index.ts",
     "bun": "./lib/index.ts"
@@ -11,5 +14,8 @@
   },
   "peerDependencies": {
     "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "openapi-fetch": "^0.7.6"
   }
 }
