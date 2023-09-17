@@ -1,0 +1,15 @@
+{
+  "name": "blurp",
+  "module": "lib/index.ts",
+  "type": "module",
+  "exports": {
+    "default": "./lib/index.ts",
+    "bun": "./lib/index.ts"
+  },
+  "devDependencies": {
+    "bun-types": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  }
+}
