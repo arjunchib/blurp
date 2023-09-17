@@ -1,4 +1,3 @@
-import { inject } from "..";
 import type { BlurpOptions } from "../bootstrap";
 import { preInject } from "../inject";
 import { matchObject } from "../utils/match_object";
@@ -101,7 +100,6 @@ export class InitService {
   }
 
   private async uploadGuildCommands(guildId: string) {
-    console.log(this.options.commands);
     const { data, error } = await this.discord.put(
       "/applications/{application_id}/guilds/{guild_id}/commands",
       {

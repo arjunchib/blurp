@@ -21,36 +21,52 @@ export class DiscordService {
     });
   }
 
-  get(...args: Parameters<typeof this.client.GET>) {
-    console.log(args[0]);
-    return this.client.GET(...args);
+  private handleResponse<
+    T extends {
+      error?: {
+        code: number;
+        message: string;
+        errors?: any;
+      };
+    }
+  >(response: T): T {
+    const { error } = response;
+    if (error) {
+      if (error.errors) console.error(error.errors);
+      throw new Error(`${error.code} ${error.message}`);
+    }
+    return response;
   }
 
-  put(...args: Parameters<typeof this.client.PUT>) {
-    return this.client.PUT(...args);
+  async get(...args: Parameters<typeof this.client.GET>) {
+    return this.handleResponse(await this.client.GET(...args));
   }
 
-  post(...args: Parameters<typeof this.client.POST>) {
-    return this.client.POST(...args);
+  async put(...args: Parameters<typeof this.client.PUT>) {
+    return this.handleResponse(await this.client.PUT(...args));
   }
 
-  delete(...args: Parameters<typeof this.client.DELETE>) {
-    return this.client.DELETE(...args);
+  async post(...args: Parameters<typeof this.client.POST>) {
+    return this.handleResponse(await this.client.POST(...args));
   }
 
-  options(...args: Parameters<typeof this.client.OPTIONS>) {
-    return this.client.OPTIONS(...args);
+  async delete(...args: Parameters<typeof this.client.DELETE>) {
+    return this.handleResponse(await this.client.DELETE(...args));
   }
 
-  head(...args: Parameters<typeof this.client.HEAD>) {
-    return this.client.HEAD(...args);
+  async options(...args: Parameters<typeof this.client.OPTIONS>) {
+    return this.handleResponse(await this.client.OPTIONS(...args));
   }
 
-  patch(...args: Parameters<typeof this.client.PATCH>) {
-    return this.client.PATCH(...args);
+  async head(...args: Parameters<typeof this.client.HEAD>) {
+    return this.handleResponse(await this.client.HEAD(...args));
   }
 
-  trace(...args: Parameters<typeof this.client.TRACE>) {
-    return this.client.TRACE(...args);
+  async patch(...args: Parameters<typeof this.client.PATCH>) {
+    return this.handleResponse(await this.client.PATCH(...args));
+  }
+
+  async trace(...args: Parameters<typeof this.client.TRACE>) {
+    return this.handleResponse(await this.client.TRACE(...args));
   }
 }
