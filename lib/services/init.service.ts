@@ -1,5 +1,5 @@
 import type { BlurpOptions } from "../bootstrap";
-import { preInject } from "../inject";
+import { inject } from "../inject";
 import { matchObject } from "../utils/match_object";
 import { DiscordService } from "./discord.service";
 
@@ -7,7 +7,7 @@ export class InitService {
   private discord: DiscordService;
 
   constructor(private options: BlurpOptions) {
-    this.discord = preInject(
+    this.discord = inject(
       DiscordService,
       new DiscordService(this.options.botToken)
     );
