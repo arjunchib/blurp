@@ -1,7 +1,12 @@
 import nacl from "tweetnacl";
+import { OnInteraction } from "./router";
 
 export class DiscordServer {
-  constructor(private publicKey: string, private port?: number) {}
+  constructor(
+    private publicKey: string,
+    private router: OnInteraction,
+    private port?: number
+  ) {}
 
   serve() {
     Bun.serve({
@@ -17,20 +22,13 @@ export class DiscordServer {
         status: 401,
       });
     }
-    console.log(await blob.json());
-    return new Response(
-      JSON.stringify({
-        type: 4,
-        data: {
-          content: "test",
-        },
-      }),
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
+    const interaction = await blob.json();
+    const interactionResponse = await this.router.onInteraction(interaction);
+    return new Response(JSON.stringify(interactionResponse), {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
   }
 
   private async isVerified(request: Request, blob: Blob): Promise<boolean> {

@@ -25,6 +25,7 @@ export class InitService {
     }
     const discordServer = new DiscordServer(
       this.options.publicKey,
+      this.options.router,
       this.options.port
     );
     discordServer.serve();

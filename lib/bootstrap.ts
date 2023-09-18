@@ -1,8 +1,9 @@
+import { OnInteraction } from "./router";
 import { InitService } from "./services/init.service";
 
 export interface BlurpOptions {
   commands: any[];
-  controllers: any[];
+  router: OnInteraction;
   applicationId: string;
   publicKey: string;
   botToken: string;
