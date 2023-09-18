@@ -1,5 +1,6 @@
 import type { BlurpOptions } from "../bootstrap";
 import { inject } from "../inject";
+import { DiscordServer } from "../server";
 import { matchObject } from "../utils/match_object";
 import { DiscordService } from "./discord.service";
 
@@ -22,6 +23,11 @@ export class InitService {
         })
       );
     }
+    const discordServer = new DiscordServer(
+      this.options.publicKey,
+      this.options.port
+    );
+    discordServer.serve();
   }
 
   private matchCommands(remoteCommands: any[], localCommands: any[]): boolean {

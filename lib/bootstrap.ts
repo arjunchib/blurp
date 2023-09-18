@@ -4,9 +4,11 @@ export interface BlurpOptions {
   commands: any[];
   controllers: any[];
   applicationId: string;
+  publicKey: string;
   botToken: string;
   global?: boolean;
   guilds?: string[];
+  port?: number;
 }
 
 export async function bootstrap(options: BlurpOptions) {

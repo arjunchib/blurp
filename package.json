@@ -16,6 +16,7 @@
     "typescript": "^5.0.0"
   },
   "dependencies": {
-    "openapi-fetch": "^0.7.6"
+    "openapi-fetch": "^0.7.6",
+    "tweetnacl": "^1.0.3"
   }
 }
