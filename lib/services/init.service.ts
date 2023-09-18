@@ -4,10 +4,16 @@ import { DiscordServer } from "../server";
 import { matchObject } from "../utils/match_object";
 import { DiscordService } from "./discord.service";
 
+type RequiredKeys<T, K extends keyof T> = Required<Pick<T, K>> & Omit<T, K>;
+type InitOptions = RequiredKeys<
+  BlurpOptions,
+  "applicationId" | "botToken" | "publicKey"
+>;
+
 export class InitService {
   private discord: DiscordService;
 
-  constructor(private options: BlurpOptions) {
+  constructor(private options: InitOptions) {
     this.discord = inject(
       DiscordService,
       new DiscordService(this.options.botToken)

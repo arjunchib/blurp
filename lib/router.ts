@@ -2,7 +2,7 @@ export interface OnInteraction {
   onInteraction(interaction: any): any | Promise<any>;
 }
 
-export class NameRouter implements OnInteraction {
+export class Router implements OnInteraction {
   static errorResponse = {
     type: 4,
     data: { content: "Error!" },
@@ -17,7 +17,7 @@ export class NameRouter implements OnInteraction {
         .replace(/controller$/, "");
       return interaction?.data?.name === controllerName;
     });
-    if (!controllerClass) return NameRouter.errorResponse;
+    if (!controllerClass) return Router.errorResponse;
     const controller = new controllerClass();
     if (interaction.type === 2) {
       if (interaction.data.type === 1) {
