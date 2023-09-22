@@ -1,7 +1,13 @@
 import nacl from "tweetnacl";
 import { OnInteraction } from "./router";
+import { Interaction } from "./interaction";
 
 export class DiscordServer {
+  static errorResponse = {
+    type: 4,
+    data: { content: "Error!" },
+  };
+
   constructor(
     private publicKey: string,
     private router: OnInteraction,
@@ -22,8 +28,18 @@ export class DiscordServer {
         status: 401,
       });
     }
-    const interaction = await blob.json();
-    const interactionResponse = await this.router.onInteraction(interaction);
+    const interactionRaw = await blob.json();
+    const interaction = new Interaction(interactionRaw);
+    const handler = this.router.onInteraction(interaction);
+    let interactionResponse = DiscordServer.errorResponse;
+    if (handler) {
+      try {
+        await handler(interaction);
+        interactionResponse = await interaction["interactionResolved"];
+      } catch (e) {
+        console.error(e);
+      }
+    }
     return new Response(JSON.stringify(interactionResponse), {
       headers: {
         "Content-Type": "application/json",
