@@ -17,6 +17,7 @@
   },
   "dependencies": {
     "openapi-fetch": "^0.7.6",
+    "snake-case": "^3.0.4",
     "tweetnacl": "^1.0.3"
   }
 }
