@@ -1,4 +1,5 @@
-import { camelCase } from "camel-case";
+import { snakeCaseKeys } from "./utils/snake_case_keys";
+import { Message } from "./types/responses/message";
 
 export interface Interaction {
   id: string;
@@ -24,17 +25,26 @@ export class Interaction {
   private reject!: (reason?: any) => void;
 
   constructor(interaction: any) {
-    for (const [k, v] of Object.entries(interaction)) {
-      // @ts-ignore
-      this[camelCase(k)] = v;
-    }
+    snakeCaseKeys(interaction, this);
     this.interactionResolved = new Promise((resolve, reject) => {
       this.resolve = resolve;
       this.reject = reject;
     });
   }
 
-  respondWith(response: any) {
-    this.resolve(response);
+  respondWith(response: string | number | Message) {
+    let type = 4;
+    let data: any = {};
+    if (typeof response === "object") {
+      type = response.update ? 7 : 4;
+      delete response.update;
+      snakeCaseKeys(response, data);
+    } else {
+      data = { content: response.toString() };
+    }
+    this.resolve({
+      type,
+      data,
+    });
   }
 }

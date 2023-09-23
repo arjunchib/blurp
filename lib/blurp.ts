@@ -13,6 +13,7 @@ import {
 import { StringOption } from "./types/options/string_option";
 import { SubCommandGroupOption } from "./types/options/sub_command_group_option";
 import { SubCommandOption } from "./types/options/sub_command_option";
+import { Message } from "./types/responses/message";
 
 export class Blurp {
   slashCommand(params: SlashCommand): Command {
@@ -65,6 +66,10 @@ export class Blurp {
 
   attachment(params: AttachmentOption): AttachmentOption {
     return { ...params, type: 11 };
+  }
+
+  message(params: Message) {
+    return params;
   }
 }
 
