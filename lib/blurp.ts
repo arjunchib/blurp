@@ -14,6 +14,7 @@ import { StringOption } from "./types/options/string_option";
 import { SubCommandGroupOption } from "./types/options/sub_command_group_option";
 import { SubCommandOption } from "./types/options/sub_command_option";
 import { Message } from "./types/responses/message";
+import { Choice } from "./types/choices";
 
 export class Blurp {
   slashCommand(params: SlashCommand): Command {
@@ -69,6 +70,10 @@ export class Blurp {
   }
 
   message(params: Message) {
+    return params;
+  }
+
+  choice(params: Choice) {
     return params;
   }
 }

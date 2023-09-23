@@ -1,5 +1,5 @@
 import { Autocomplete } from "./autocomplete";
-import { Choices } from "./choices";
+import { Choices } from "../choices";
 import { Option } from "./option";
 import { Value } from "./value";
 

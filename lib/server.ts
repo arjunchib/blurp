@@ -1,6 +1,6 @@
 import nacl from "tweetnacl";
 import { OnInteraction } from "./router";
-import { Interaction } from "./interaction";
+import { Interaction } from "./interactions/interaction";
 
 export class DiscordServer {
   static errorResponse = {
@@ -29,12 +29,12 @@ export class DiscordServer {
       });
     }
     const interactionRaw = await blob.json();
-    const interaction = new Interaction(interactionRaw);
-    const handler = this.router.onInteraction(interaction);
+    const route = this.router.onInteraction(interactionRaw);
     let interactionResponse = DiscordServer.errorResponse;
-    if (handler) {
+    if (route) {
       try {
-        await handler(interaction);
+        const interaction = new route.interaction(interactionRaw);
+        await route.controller(interaction);
         interactionResponse = await interaction["interactionResolved"];
       } catch (e) {
         console.error(e);

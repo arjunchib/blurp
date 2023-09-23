@@ -1,17 +1,22 @@
 import { Interaction } from ".";
+import { AutocompleteInteraction } from "./interactions/autocomplete_interaction";
+import { SlashInteraction } from "./interactions/slash_interaction";
 
 export interface OnInteraction {
-  onInteraction(
-    interaction: Interaction
-  ): ((interaction: Interaction) => Promise<void> | void) | undefined;
+  onInteraction(interaction: any): Route | undefined;
+}
+
+export interface Route {
+  controller: (interaction: Interaction) => Promise<void> | void;
+  interaction: new (args: any) => Interaction;
 }
 
 export class Router implements OnInteraction {
+  private controllerInstance?: any;
+
   constructor(private controllers: (new (...args: any) => any)[]) {}
 
-  onInteraction(
-    interaction: Interaction
-  ): ((interaction: Interaction) => Promise<void> | void) | undefined {
+  onInteraction(interaction: any): Route | undefined {
     const controllerClass = this.controllers.find((controller) => {
       const controllerName = controller.name
         .toLowerCase()
@@ -19,21 +24,34 @@ export class Router implements OnInteraction {
       return interaction?.data?.name === controllerName;
     });
     if (!controllerClass) return undefined;
-    const controller = new controllerClass();
+    this.controllerInstance = new controllerClass();
     if (interaction.type === 2) {
       if (interaction.data.type === 1) {
-        return controller.chatInput.bind(controller);
+        return this.createRoute("slash");
       } else if (interaction.data.type === 2) {
-        return controller.user.bind(controller);
+        return this.createRoute("user");
       } else if (interaction.data.type === 3) {
-        return controller.message.bind(controller);
+        return this.createRoute("message");
       }
     } else if (interaction.type === 3) {
-      return controller.messageComponent.bind(controller);
+      this.createRoute("messageComponent");
     } else if (interaction.type === 4) {
-      return controller.autocomplete.bind(controller);
+      return this.createRoute("autocomplete", AutocompleteInteraction);
     } else if (interaction.type === 5) {
-      return controller.modalSubmit.bind(controller);
+      return this.createRoute("modalSubmit");
     }
+  }
+
+  private createRoute(
+    methodName: string,
+    interactionClass?: new (args: any) => Interaction
+  ): Route | undefined {
+    if (!this.controllerInstance?.[methodName]) return undefined;
+    return {
+      controller: this.controllerInstance[methodName].bind(
+        this.controllerInstance
+      ),
+      interaction: interactionClass || SlashInteraction,
+    };
   }
 }
