@@ -1,10 +1,12 @@
+import { Embed } from "./embed";
+
 export interface Message {
   /** is the response TTS */
   tts?: boolean;
   /** message content */
   content?: string;
   /** supports up to 10 embeds */
-  embeds?: any[];
+  embeds?: Embed[];
   /** allowed mentions object */
   allowedMentions?: {};
   /** message flags combined as a bitfield (only SUPPRESS_EMBEDS and EPHEMERAL can be set) */
