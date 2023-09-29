@@ -11,7 +11,10 @@ import {
 } from "./types/options/option";
 import { StringOption } from "./types/options/string_option";
 import { SubCommandGroupOption } from "./types/options/sub_command_group_option";
-import { SubCommandOption } from "./types/options/sub_command_option";
+import {
+  BasicOptions,
+  SubCommandOption,
+} from "./types/options/sub_command_option";
 import { Message } from "./types/responses/message";
 import { Choice } from "./types/choices";
 
@@ -22,15 +25,23 @@ export class Blurp {
     return params;
   }
 
-  subcommand<const N extends string, const R extends boolean>(
-    params: Omit<SubCommandOption<N, R>, "type">
-  ): SubCommandOption<N, R> {
+  subcommand<
+    const N extends string,
+    const R extends boolean,
+    const O extends BasicOptions
+  >(
+    params: Omit<SubCommandOption<N, R, O>, "type">
+  ): SubCommandOption<N, R, O> {
     return { ...params, type: 1 };
   }
 
-  subcommandGroup<const N extends string, const R extends boolean>(
-    params: Omit<SubCommandGroupOption<N, R>, "type">
-  ): SubCommandGroupOption<N, R> {
+  subcommandGroup<
+    const N extends string,
+    const R extends boolean,
+    const O extends SubCommandOption
+  >(
+    params: Omit<SubCommandGroupOption<N, R, O>, "type">
+  ): SubCommandGroupOption<N, R, O> {
     return { ...params, type: 2 };
   }
 

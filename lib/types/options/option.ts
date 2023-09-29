@@ -19,19 +19,17 @@ export interface BooleanOption<Name = string, Required = boolean>
   extends Option<Name, Required> {
   type: 5;
 }
-export interface UserOption<Name = string, Required = boolean>
-  extends Option<Name, Required> {
+export interface UserOption<N = string, R = boolean> extends Option<N, R> {
   type: 6;
 }
-export interface RoleOption<Name = string, Required = boolean>
-  extends Option<Name, Required> {
+export interface RoleOption<N = string, R = boolean> extends Option<N, R> {
   type: 8;
 }
-export interface MentionableOption<Name = string, Required = boolean>
-  extends Option<Name, Required> {
+export interface MentionableOption<N = string, R = boolean>
+  extends Option<N, R> {
   type: 9;
 }
-export interface AttachmentOption<Name = string, Required = boolean>
-  extends Option<Name, Required> {
+export interface AttachmentOption<N = string, R = boolean>
+  extends Option<N, R> {
   type: 11;
 }

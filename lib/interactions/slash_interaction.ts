@@ -39,9 +39,16 @@ export interface SlashInteraction<T> extends Interaction {
 // expands object types recursively
 type ExpandRecursively<T> = T extends object
   ? T extends infer O
-    ? { [K in keyof O]: ExpandRecursively<O[K]> }
+    ? {
+        [K in keyof O as NonNeverKey<O, K>]: ExpandRecursively<O[K]>;
+      }
     : never
   : T;
+
+// resolves to never if value for key is never
+type NonNeverKey<O extends any, K extends keyof O> = O[K] extends never
+  ? never
+  : K;
 
 type IsRequired<T, K> = K extends true | undefined ? T : T | undefined;
 
@@ -94,6 +101,9 @@ type Objectify<T extends Option[]> = {
     {
       type: OptionType<P>;
       value: OptionValueType<P>;
+      options: P extends { options: Option[] }
+        ? Objectify<P["options"]>
+        : never;
     },
     P["required"]
   >;
@@ -102,8 +112,19 @@ type Objectify<T extends Option[]> = {
 export class SlashInteraction<
   T extends SlashCommand = SlashCommand
 > extends Interaction {
+  private _options?: any;
+
   get options(): ExpandRecursively<Objectify<NonNullable<T["options"]>>> {
-    return {} as any;
+    this._options ||= this.mappedOptions;
+    return this._options;
+  }
+
+  private get mappedOptions() {
+    const options: any = {};
+    this.data.options?.forEach((option) => {
+      options[option.name] = { ...option, name: undefined };
+    });
+    return options;
   }
 
   respondWith(response: string | number | Message) {

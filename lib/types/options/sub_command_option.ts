@@ -10,19 +10,20 @@ import {
 } from "./option";
 import { StringOption } from "./string_option";
 
-export interface SubCommandOption<Name = string, Required = boolean>
-  extends Option<Name, Required> {
+export type BasicOptions =
+  | StringOption
+  | IntegerOption
+  | BooleanOption
+  | UserOption
+  | ChannelOption
+  | RoleOption
+  | MentionableOption
+  | NumberOption
+  | AttachmentOption;
+
+export interface SubCommandOption<N = string, R = boolean, O = BasicOptions>
+  extends Option<N, R> {
   type: 1;
   /** The parameters for the options */
-  options: (
-    | StringOption
-    | IntegerOption
-    | BooleanOption
-    | UserOption
-    | ChannelOption
-    | RoleOption
-    | MentionableOption
-    | NumberOption
-    | AttachmentOption
-  )[];
+  options: O[];
 }

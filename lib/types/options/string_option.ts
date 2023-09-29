@@ -2,8 +2,8 @@ import { Autocomplete } from "./autocomplete";
 import { Choices } from "../choices";
 import { Option } from "./option";
 
-export interface StringOption<Name = string, Required = boolean>
-  extends Option<Name, Required>,
+export interface StringOption<N = string, R = boolean>
+  extends Option<N, R>,
     Choices<string>,
     Autocomplete {
   type: 3;
