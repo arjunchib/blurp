@@ -37,7 +37,7 @@ export interface SlashInteraction<T> extends Interaction {
 }
 
 // expands object types recursively
-type ExpandRecursively<T> = T extends object
+export type ExpandRecursively<T> = T extends object
   ? T extends infer O
     ? {
         [K in keyof O as NonNeverKey<O, K>]: ExpandRecursively<O[K]>;
@@ -46,13 +46,13 @@ type ExpandRecursively<T> = T extends object
   : T;
 
 // resolves to never if value for key is never
-type NonNeverKey<O extends any, K extends keyof O> = O[K] extends never
+export type NonNeverKey<O extends any, K extends keyof O> = O[K] extends never
   ? never
   : K;
 
-type IsRequired<T, K> = K extends true | undefined ? T : T | undefined;
+export type IsRequired<T, K> = K extends true | undefined ? T : T | undefined;
 
-type OptionType<T> = T extends SubCommandOption
+export type OptionType<T> = T extends SubCommandOption
   ? "subcommand"
   : T extends SubCommandGroupOption
   ? "subcommand_group"
@@ -76,7 +76,7 @@ type OptionType<T> = T extends SubCommandOption
   ? "attachment"
   : never;
 
-type OptionValueType<T> = T extends StringOption
+export type OptionValueType<T> = T extends StringOption
   ? string
   : T extends IntegerOption | NumberOption
   ? number
@@ -96,7 +96,7 @@ type OptionValueType<T> = T extends StringOption
   ? any
   : never;
 
-type Objectify<T extends Option[]> = {
+export type Objectify<T extends Option[]> = {
   [P in T extends Option[] ? T[number] : never as P["name"]]: IsRequired<
     {
       type: OptionType<P>;
