@@ -115,16 +115,20 @@ export class SlashInteraction<
   private _options?: any;
 
   get options(): ExpandRecursively<Objectify<NonNullable<T["options"]>>> {
-    this._options ||= this.mappedOptions;
+    this._options ||= this.mappedOptions(this.data.options || []);
     return this._options;
   }
 
-  private get mappedOptions() {
-    const options: any = {};
-    this.data.options?.forEach((option) => {
-      options[option.name] = { ...option, name: undefined };
+  private mappedOptions(options: any[]) {
+    const mappedOptions: any = {};
+    options?.forEach((option) => {
+      mappedOptions[option.name] = { ...option };
+      delete mappedOptions[option.name].name;
+      if (option.options) {
+        mappedOptions[option.name].options = this.mappedOptions(option.options);
+      }
     });
-    return options;
+    return mappedOptions;
   }
 
   respondWith(response: string | number | Message) {

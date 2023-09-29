@@ -11,7 +11,7 @@ import {
 } from "./types/options/option";
 import { StringOption } from "./types/options/string_option";
 import { SubCommandGroupOption } from "./types/options/sub_command_group_option";
-import {
+import type {
   BasicOptions,
   SubCommandOption,
 } from "./types/options/sub_command_option";
@@ -19,6 +19,12 @@ import { Message } from "./types/responses/message";
 import { Choice } from "./types/choices";
 
 export class Blurp {
+  slashCommand<const T extends BasicOptions>(
+    params: SlashCommand<T>
+  ): SlashCommand<T>;
+  slashCommand<const T extends SubCommandGroupOption | SubCommandOption>(
+    params: SlashCommand<T>
+  ): SlashCommand<T>;
   slashCommand<const T extends Option>(
     params: SlashCommand<T>
   ): SlashCommand<T> {
