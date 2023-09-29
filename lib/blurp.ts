@@ -1,5 +1,3 @@
-import { snakeCase } from "snake-case";
-import { Command } from ".";
 import { SlashCommand } from "./types/commands/slash_command";
 import { ChannelOption } from "./types/options/channel_option";
 import { IntegerOption, NumberOption } from "./types/options/number_option";
@@ -7,6 +5,7 @@ import {
   AttachmentOption,
   BooleanOption,
   MentionableOption,
+  Option,
   RoleOption,
   UserOption,
 } from "./types/options/option";
@@ -17,55 +16,75 @@ import { Message } from "./types/responses/message";
 import { Choice } from "./types/choices";
 
 export class Blurp {
-  slashCommand(params: SlashCommand): Command {
-    const command: any = {};
-    for (const [k, v] of Object.entries(params)) {
-      command[snakeCase(k)] = v;
-    }
-    return command;
+  slashCommand<const T extends Option>(
+    params: SlashCommand<T>
+  ): SlashCommand<T> {
+    return params;
   }
 
-  subcommand(params: SubCommandOption): SubCommandOption {
+  subcommand<const N extends string, const R extends boolean>(
+    params: Omit<SubCommandOption<N, R>, "type">
+  ): SubCommandOption<N, R> {
     return { ...params, type: 1 };
   }
 
-  subcommandGroup(params: SubCommandGroupOption): SubCommandGroupOption {
+  subcommandGroup<const N extends string, const R extends boolean>(
+    params: Omit<SubCommandGroupOption<N, R>, "type">
+  ): SubCommandGroupOption<N, R> {
     return { ...params, type: 2 };
   }
 
-  string(params: StringOption): StringOption {
+  string<const N extends string, const R extends boolean>(
+    params: Omit<StringOption<N, R>, "type">
+  ): StringOption<N, R> {
     return { ...params, type: 3 };
   }
 
-  integer(params: IntegerOption): IntegerOption {
+  integer<const N extends string, const R extends boolean>(
+    params: Omit<IntegerOption<N, R>, "type">
+  ): IntegerOption<N, R> {
     return { ...params, type: 4 };
   }
 
-  boolean(params: BooleanOption): BooleanOption {
+  boolean<const N extends string, const R extends boolean>(
+    params: Omit<BooleanOption<N, R>, "type">
+  ): BooleanOption<N, R> {
     return { ...params, type: 5 };
   }
 
-  user(params: UserOption): UserOption {
+  user<const N extends string, const R extends boolean>(
+    params: Omit<UserOption<N, R>, "type">
+  ): UserOption<N, R> {
     return { ...params, type: 6 };
   }
 
-  channel(params: ChannelOption): ChannelOption {
+  channel<const N extends string, const R extends boolean>(
+    params: Omit<ChannelOption<N, R>, "type">
+  ): ChannelOption<N, R> {
     return { ...params, type: 7 };
   }
 
-  role(params: RoleOption): RoleOption {
+  role<const N extends string, const R extends boolean>(
+    params: Omit<RoleOption<N, R>, "type">
+  ): RoleOption<N, R> {
     return { ...params, type: 8 };
   }
 
-  mentionable(params: MentionableOption): MentionableOption {
+  mentionable<const N extends string, const R extends boolean>(
+    params: Omit<MentionableOption<N, R>, "type">
+  ): MentionableOption<N, R> {
     return { ...params, type: 9 };
   }
 
-  number(params: NumberOption): NumberOption {
+  number<const N extends string, const R extends boolean>(
+    params: Omit<NumberOption<N, R>, "type">
+  ): NumberOption<N, R> {
     return { ...params, type: 10 };
   }
 
-  attachment(params: AttachmentOption): AttachmentOption {
+  attachment<const N extends string, const R extends boolean>(
+    params: Omit<AttachmentOption<N, R>, "type">
+  ): AttachmentOption<N, R> {
     return { ...params, type: 11 };
   }
 

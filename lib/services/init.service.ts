@@ -1,3 +1,4 @@
+import { snakeCase } from "snake-case";
 import type { BlurpOptions } from "../bootstrap";
 import { inject } from "../inject";
 import { DiscordServer } from "../server";
@@ -12,6 +13,7 @@ type InitOptions = RequiredKeys<
 
 export class InitService {
   private discord: DiscordService;
+  private commands: any[] = [];
 
   constructor(private options: InitOptions) {
     this.discord = inject(
@@ -21,6 +23,7 @@ export class InitService {
   }
 
   async initialize() {
+    this.setupCommands();
     if (this.options.global) await this.syncGlobalCommands();
     if (this.options.guilds) {
       await Promise.all(
@@ -37,6 +40,16 @@ export class InitService {
     discordServer.serve();
   }
 
+  private setupCommands() {
+    for (const command of this.options.commands) {
+      const cmd: any = {};
+      for (const [k, v] of Object.entries(command)) {
+        cmd[snakeCase(k)] = v;
+      }
+      this.commands.push(cmd);
+    }
+  }
+
   private matchCommands(remoteCommands: any[], localCommands: any[]): boolean {
     if (remoteCommands.length !== localCommands.length) return false;
     return localCommands.every((localCommand) => {
@@ -51,14 +64,14 @@ export class InitService {
 
   private async syncGlobalCommands() {
     const globalCommands = await this.getGlobalCommands();
-    if (!this.matchCommands(globalCommands, this.options.commands)) {
+    if (!this.matchCommands(globalCommands, this.commands)) {
       await this.uploadGlobalCommands();
     }
   }
 
   private async syncGuildCommands(guildId: string) {
     const guildCommands = await this.getGuildCommands(guildId);
-    if (!this.matchCommands(guildCommands, this.options.commands)) {
+    if (!this.matchCommands(guildCommands, this.commands)) {
       await this.uploadGuildCommands(guildId);
     }
   }
@@ -105,7 +118,7 @@ export class InitService {
             application_id: this.options.applicationId,
           },
         },
-        body: this.options.commands,
+        body: this.commands,
       }
     );
     if (error) throw new Error(error.message);
@@ -122,7 +135,7 @@ export class InitService {
             guild_id: guildId,
           },
         },
-        body: this.options.commands,
+        body: this.commands,
       }
     );
     if (error) throw new Error(error.message);

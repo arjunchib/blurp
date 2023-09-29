@@ -1,8 +1,9 @@
 import { OnInteraction } from "./router";
 import { InitService } from "./services/init.service";
+import { ApplicationCommand } from "./types/commands/application_command";
 
 export type BlurpOptions = {
-  commands: any[];
+  commands: ApplicationCommand[];
   router: OnInteraction;
   applicationId?: string;
   publicKey?: string;

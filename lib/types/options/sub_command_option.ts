@@ -10,7 +10,9 @@ import {
 } from "./option";
 import { StringOption } from "./string_option";
 
-export interface SubCommandOption extends Option {
+export interface SubCommandOption<Name = string, Required = boolean>
+  extends Option<Name, Required> {
+  type: 1;
   /** The parameters for the options */
   options: (
     | StringOption

@@ -3,14 +3,18 @@ import { Choices } from "../choices";
 import { Option } from "./option";
 import { Value } from "./value";
 
-export interface NumberOption
-  extends Option,
+export interface NumberOption<Name = string, Required = boolean>
+  extends Option<Name, Required>,
     Choices<number>,
     Autocomplete,
-    Value {}
+    Value {
+  type: 10;
+}
 
-export interface IntegerOption
-  extends Option,
+export interface IntegerOption<Name = string, Required = boolean>
+  extends Option<Name, Required>,
     Choices<number>,
     Autocomplete,
-    Value {}
+    Value {
+  type: 4;
+}
