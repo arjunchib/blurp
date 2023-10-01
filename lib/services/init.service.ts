@@ -3,8 +3,8 @@ import type { BlurpOptions } from "../bootstrap";
 import { inject } from "../inject";
 import { DiscordServer } from "../server";
 import { matchObject } from "../utils/match_object";
-import { DiscordService } from "./discord.service";
 import { OptionsService } from "./options.service";
+import { DiscordService } from "./discord.service";
 
 export type RequiredKeys<T, K extends keyof T> = Required<Pick<T, K>> &
   Omit<T, K>;
@@ -14,16 +14,9 @@ export type InitOptions = RequiredKeys<
 >;
 
 export class InitService {
-  private discord: DiscordService;
+  private options = inject(OptionsService);
+  private discord = inject(DiscordService);
   private commands: any[] = [];
-
-  constructor(private options: InitOptions) {
-    inject(OptionsService, new OptionsService(this.options));
-    this.discord = inject(
-      DiscordService,
-      new DiscordService(this.options.botToken)
-    );
-  }
 
   async initialize() {
     this.setupCommands();
@@ -80,7 +73,7 @@ export class InitService {
   }
 
   private async getGlobalCommands() {
-    const { data, error } = await this.discord.get(
+    const { data, error } = await this.discord.GET(
       "/applications/{application_id}/commands",
       {
         params: {
@@ -96,7 +89,7 @@ export class InitService {
   }
 
   private async getGuildCommands(guildId: string) {
-    const { data, error } = await this.discord.get(
+    const { data, error } = await this.discord.GET(
       "/applications/{application_id}/guilds/{guild_id}/commands",
       {
         params: {
@@ -113,7 +106,7 @@ export class InitService {
   }
 
   private async uploadGlobalCommands() {
-    const { data, error } = await this.discord.put(
+    const { data, error } = await this.discord.PUT(
       "/applications/{application_id}/commands",
       {
         params: {
@@ -130,7 +123,7 @@ export class InitService {
 
   private async uploadGuildCommands(guildId: string) {
     console.log("updated guild command");
-    const { data, error } = await this.discord.put(
+    const { data, error } = await this.discord.PUT(
       "/applications/{application_id}/guilds/{guild_id}/commands",
       {
         params: {

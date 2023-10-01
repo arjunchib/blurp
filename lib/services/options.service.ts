@@ -1,9 +1,9 @@
 import { InitOptions } from "./init.service";
 
-export class OptionsService {
-  applicationId: string;
+export interface OptionsService extends InitOptions {}
 
+export class OptionsService {
   constructor(options: InitOptions) {
-    this.applicationId = options.applicationId;
+    Object.assign(this, options);
   }
 }

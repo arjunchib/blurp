@@ -1,5 +1,8 @@
+import { inject } from ".";
 import { OnInteraction } from "./router";
+import { DiscordService } from "./services/discord.service";
 import { InitService } from "./services/init.service";
+import { OptionsService } from "./services/options.service";
 import { ApplicationCommand } from "./types/commands/application_command";
 
 export type BlurpOptions = {
@@ -21,11 +24,11 @@ export async function bootstrap(options: BlurpOptions) {
   if (!applicationId) throw new Error("No application id provided");
   if (!botToken) throw new Error("No bot token provided");
   if (!publicKey) throw new Error("No public key provided");
-  const initService = new InitService({
-    ...options,
-    applicationId,
-    botToken,
-    publicKey,
-  });
+  inject(
+    OptionsService,
+    new OptionsService({ ...options, applicationId, botToken, publicKey })
+  );
+  inject(DiscordService);
+  const initService = new InitService();
   await initService.initialize();
 }

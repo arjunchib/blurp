@@ -15,3 +15,7 @@ export function inject<T extends new (...args: any) => any>(
   }
   return instance!;
 }
+
+export function factory<T>(fn: () => T): new () => T {
+  return fn as any;
+}
