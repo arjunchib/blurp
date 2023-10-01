@@ -4,7 +4,6 @@ import { snakeCaseKeys } from "../utils/snake_case_keys";
 import { Option, SlashCommand } from "..";
 import {
   ExpandRecursively,
-  IsRequired,
   OptionType,
   OptionValueType,
 } from "./slash_interaction";
@@ -34,17 +33,12 @@ export interface AutocompleteInteraction {
 }
 
 export type Objectify<T extends Option[]> = {
-  [P in T extends Option[] ? T[number] : never as P["name"]]: IsRequired<
-    {
-      type: OptionType<P>;
-      value: OptionValueType<P>;
-      options: P extends { options: Option[] }
-        ? Objectify<P["options"]>
-        : never;
-      focused: boolean;
-    },
-    P["required"]
-  >;
+  [P in T extends Option[] ? T[number] : never as P["name"]]?: {
+    type: OptionType<P>;
+    value: OptionValueType<P>;
+    options: P extends { options: Option[] } ? Objectify<P["options"]> : never;
+    focused: boolean;
+  };
 };
 
 export class AutocompleteInteraction<

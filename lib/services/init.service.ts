@@ -126,6 +126,7 @@ export class InitService {
   }
 
   private async uploadGuildCommands(guildId: string) {
+    console.log("updated guild command");
     const { data, error } = await this.discord.put(
       "/applications/{application_id}/guilds/{guild_id}/commands",
       {

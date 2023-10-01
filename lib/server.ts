@@ -1,6 +1,5 @@
 import nacl from "tweetnacl";
 import { OnInteraction } from "./router";
-import { Interaction } from "./interactions/interaction";
 
 export class DiscordServer {
   static errorResponse = {
