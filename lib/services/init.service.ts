@@ -4,9 +4,11 @@ import { inject } from "../inject";
 import { DiscordServer } from "../server";
 import { matchObject } from "../utils/match_object";
 import { DiscordService } from "./discord.service";
+import { OptionsService } from "./options.service";
 
-type RequiredKeys<T, K extends keyof T> = Required<Pick<T, K>> & Omit<T, K>;
-type InitOptions = RequiredKeys<
+export type RequiredKeys<T, K extends keyof T> = Required<Pick<T, K>> &
+  Omit<T, K>;
+export type InitOptions = RequiredKeys<
   BlurpOptions,
   "applicationId" | "botToken" | "publicKey"
 >;
@@ -16,6 +18,7 @@ export class InitService {
   private commands: any[] = [];
 
   constructor(private options: InitOptions) {
+    inject(OptionsService, new OptionsService(this.options));
     this.discord = inject(
       DiscordService,
       new DiscordService(this.options.botToken)

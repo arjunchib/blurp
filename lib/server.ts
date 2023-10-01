@@ -14,7 +14,7 @@ export class DiscordServer {
   ) {}
 
   serve() {
-    Bun.serve({
+    const server = Bun.serve({
       port: this.port ?? 3000,
       fetch: this.fetch.bind(this),
     });
@@ -33,7 +33,7 @@ export class DiscordServer {
     if (route) {
       try {
         const interaction = new route.interaction(interactionRaw);
-        await route.controller(interaction);
+        route.controller(interaction)?.catch((e) => console.error(e));
         interactionResponse = await interaction["interactionResolved"];
       } catch (e) {
         console.error(e);

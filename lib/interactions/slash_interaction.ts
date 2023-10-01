@@ -1,7 +1,7 @@
 import { snakeCaseKeys } from "../utils/snake_case_keys";
 import { Message } from "../types/responses/message";
 import { Interaction } from "./interaction";
-import { SlashCommand, StringOption } from "..";
+import { DiscordService, SlashCommand, StringOption, inject } from "..";
 import {
   AttachmentOption,
   BooleanOption,
@@ -14,6 +14,7 @@ import { IntegerOption, NumberOption } from "../types/options/number_option";
 import { SubCommandOption } from "../types/options/sub_command_option";
 import { SubCommandGroupOption } from "../types/options/sub_command_group_option";
 import { ChannelOption } from "../types/options/channel_option";
+import { OptionsService } from "../services/options.service";
 
 export interface SlashInteractionData {
   id: string;
@@ -112,6 +113,8 @@ export type Objectify<T extends Option[]> = {
 export class SlashInteraction<
   T extends SlashCommand = SlashCommand
 > extends Interaction {
+  private discord = inject(DiscordService);
+  private blurpOptions = inject(OptionsService);
   private _options?: any;
 
   get options(): ExpandRecursively<Objectify<NonNullable<T["options"]>>> {
@@ -145,5 +148,32 @@ export class SlashInteraction<
       type,
       data,
     });
+  }
+
+  defer() {
+    this.resolve({ type: 5 });
+  }
+
+  async followupWith(response: string | number | Message) {
+    let body: any = {};
+    if (typeof response === "object") {
+      snakeCaseKeys(response, body);
+    } else {
+      body = { content: response.toString() };
+    }
+    const { data, error } = await this.discord.post(
+      "/webhooks/{webhook_id}/{webhook_token}",
+      {
+        params: {
+          path: {
+            webhook_id: this.blurpOptions.applicationId,
+            webhook_token: this.token,
+          },
+        },
+        body,
+      }
+    );
+    if (error) throw error;
+    return data;
   }
 }
