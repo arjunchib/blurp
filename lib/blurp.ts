@@ -15,8 +15,32 @@ import type {
   BasicOptions,
   SubCommandOption,
 } from "./types/options/sub_command_option";
-import { Message } from "./types/responses/message";
+import { Message, MessageParams } from "./types/responses/message";
 import { Choice } from "./types/choices";
+import { Button, ButtonParams } from "./types/components/button";
+import { TextInput, TextInputParams } from "./types/components/text_input";
+import { Component } from "./types/components/component";
+import { Link, LinkParams } from "./types/components/link";
+import {
+  StringSelect,
+  StringSelectParams,
+} from "./types/components/selects/string_select";
+import {
+  UserSelect,
+  UserSelectParams,
+} from "./types/components/selects/user_select";
+import {
+  RoleSelect,
+  RoleSelectParams,
+} from "./types/components/selects/role_select";
+import {
+  MentionableSelect,
+  MentionableSelectParams,
+} from "./types/components/selects/mentionable_select";
+import {
+  ChannelSelect,
+  ChannelSelectParams,
+} from "./types/components/selects/channel_select";
 
 export class Blurp {
   slashCommand<const T extends BasicOptions>(
@@ -105,46 +129,44 @@ export class Blurp {
     return { ...params, type: 11 };
   }
 
-  message(params: Message) {
-    return params;
+  message(params: MessageParams) {
+    return new Message(params);
   }
 
   choice(params: Choice) {
     return params;
   }
+
+  button(params: ButtonParams) {
+    return new Button(params);
+  }
+
+  link(params: LinkParams) {
+    return new Link(params);
+  }
+
+  textInput(params: TextInputParams) {
+    return new TextInput(params);
+  }
+
+  textSelect(params: StringSelectParams) {
+    return new StringSelect(params);
+  }
+
+  userSelect(params: UserSelectParams) {
+    return new UserSelect(params);
+  }
+
+  roleSelect(params: RoleSelectParams) {
+    return new RoleSelect(params);
+  }
+  mentionableSelect(params: MentionableSelectParams) {
+    return new MentionableSelect(params);
+  }
+
+  channelSelect(params: ChannelSelectParams) {
+    return new ChannelSelect(params);
+  }
 }
 
 export const b = new Blurp();
-
-b.slashCommand({
-  name: "sasssda",
-  description: "ASdadasd",
-  options: [
-    b.subcommand({
-      name: "asdasd",
-      description: "sadasd",
-      options: [
-        b.string({
-          name: "asd",
-          description: "asd",
-        }),
-      ],
-    }),
-    b.subcommandGroup({
-      name: "asdasd",
-      description: "sadasd",
-      options: [
-        b.subcommand({
-          name: "asd",
-          description: "asd",
-          options: [
-            b.string({
-              name: "asdas",
-              description: "ASDasd",
-            }),
-          ],
-        }),
-      ],
-    }),
-  ],
-});

@@ -1,5 +1,4 @@
 import { Interaction, inject } from "..";
-import { DiscordServer } from "../server";
 import { DiscordService } from "../services/discord.service";
 import { OptionsService } from "../services/options.service";
 import { Message } from "../types/responses/message";

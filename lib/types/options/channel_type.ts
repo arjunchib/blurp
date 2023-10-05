@@ -12,7 +12,7 @@ export enum ChannelType {
   /** a channel that {@link https://support.discord.com/hc/en-us/articles/360032008192 | users can follow and crosspost into their own server} (formerly news channels) */
   GUILD_ANNOUNCEMENT,
   /** a temporary sub-channel within a GUILD_ANNOUNCEMENT channel */
-  ANNOUNCEMENT_THREAD,
+  ANNOUNCEMENT_THREAD = 10,
   /** a temporary sub-channel within a GUILD_TEXT or GUILD_FORUM channel */
   PUBLIC_THREAD,
   /** a temporary sub-channel within a GUILD_TEXT channel that is only viewable by those invited and those with the MANAGE_THREADS permission */

@@ -1,5 +1,5 @@
 import { snakeCaseKeys } from "../utils/snake_case_keys";
-import { Message } from "../types/responses/message";
+import { Message, MessageParams } from "../types/responses/message";
 import { Interaction } from "./interaction";
 import { SlashCommand, StringOption, inject } from "..";
 import {
@@ -136,20 +136,17 @@ export class SlashInteraction<
     return mappedOptions;
   }
 
-  respondWith(response: string | number | Message) {
+  respondWith(response: string | number | MessageParams) {
     let type = 4;
     let data: any = {};
     if (typeof response === "object") {
-      type = response.update ? 7 : 4;
-      delete response.update;
-      snakeCaseKeys(response, data);
+      const message = new Message(response);
+      type = message.update ? 7 : 4;
+      data = message["toComponent"]();
     } else {
       data = { content: response.toString() };
     }
-    this.resolve({
-      type,
-      data,
-    });
+    this.resolve({ type, data });
     return new InteractionResponse(this);
   }
 

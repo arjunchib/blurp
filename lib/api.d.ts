@@ -635,16 +635,6 @@ export interface paths {
       };
     };
   };
-  "/guilds/{guild_id}/channels": {
-    get: operations["list_guild_channels"];
-    post: operations["create_guild_channel"];
-    patch: operations["bulk_update_guild_channels"];
-    parameters: {
-      path: {
-        guild_id: components["schemas"]["SnowflakeType"];
-      };
-    };
-  };
   "/guilds/{guild_id}/stickers": {
     get: operations["list_guild_stickers"];
     post: operations["create_guild_sticker"];
@@ -656,6 +646,16 @@ export interface paths {
   };
   "/guilds/{guild_id}/webhooks": {
     get: operations["get_guild_webhooks"];
+    parameters: {
+      path: {
+        guild_id: components["schemas"]["SnowflakeType"];
+      };
+    };
+  };
+  "/guilds/{guild_id}/channels": {
+    get: operations["list_guild_channels"];
+    post: operations["create_guild_channel"];
+    patch: operations["bulk_update_guild_channels"];
     parameters: {
       path: {
         guild_id: components["schemas"]["SnowflakeType"];
@@ -822,16 +822,6 @@ export interface paths {
       };
     };
   };
-  "/channels/{channel_id}": {
-    get: operations["get_channel"];
-    delete: operations["delete_channel"];
-    patch: operations["update_channel"];
-    parameters: {
-      path: {
-        channel_id: components["schemas"]["SnowflakeType"];
-      };
-    };
-  };
   "/stickers/{sticker_id}": {
     get: operations["get_sticker"];
     parameters: {
@@ -847,6 +837,16 @@ export interface paths {
     parameters: {
       path: {
         webhook_id: components["schemas"]["SnowflakeType"];
+      };
+    };
+  };
+  "/channels/{channel_id}": {
+    get: operations["get_channel"];
+    delete: operations["delete_channel"];
+    patch: operations["update_channel"];
+    parameters: {
+      path: {
+        channel_id: components["schemas"]["SnowflakeType"];
       };
     };
   };
@@ -898,6 +898,8 @@ export interface components {
     /** Format: int32 */
     AfkTimeouts: 60 | 300 | 900 | 1800 | 3600;
     AllowedMentionTypes: "users" | "roles" | "everyone";
+    /** Format: int32 */
+    ApplicationCommandApplicationCommandType: never;
     ApplicationCommandAttachmentOption: {
       /**
        * Format: int32
@@ -1180,20 +1182,20 @@ export interface components {
       value: string;
     };
     /** Format: int32 */
-    ApplicationCommandOptionTypes: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11;
+    ApplicationCommandOptionTypeScopeApplicationCommandOptionType: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11;
     ApplicationCommandPermission: {
       id: components["schemas"]["SnowflakeType"];
-      type: components["schemas"]["ApplicationCommandPermissionTypes"];
+      type: components["schemas"]["ApplicationCommandPermissionType"];
       permission: boolean;
     };
     /** Format: int32 */
-    ApplicationCommandPermissionTypes: 1 | 2 | 3;
+    ApplicationCommandPermissionType: 1 | 2 | 3;
     ApplicationCommandResponse: {
       id: components["schemas"]["SnowflakeType"];
       application_id: components["schemas"]["SnowflakeType"];
       version: components["schemas"]["SnowflakeType"];
       default_member_permissions?: string | null;
-      type: components["schemas"]["ApplicationCommandTypes"];
+      type: components["schemas"]["ApplicationCommandApplicationCommandType"];
       name: string;
       name_localized?: string | null;
       name_localizations?: {
@@ -1359,8 +1361,6 @@ export interface components {
       required?: boolean | null;
       options?: ((components["schemas"]["ApplicationCommandAttachmentOptionResponse"] | components["schemas"]["ApplicationCommandBooleanOptionResponse"] | components["schemas"]["ApplicationCommandChannelOptionResponse"] | components["schemas"]["ApplicationCommandIntegerOptionResponse"] | components["schemas"]["ApplicationCommandMentionableOptionResponse"] | components["schemas"]["ApplicationCommandNumberOptionResponse"] | components["schemas"]["ApplicationCommandRoleOptionResponse"] | components["schemas"]["ApplicationCommandStringOptionResponse"] | components["schemas"]["ApplicationCommandUserOptionResponse"])[]) | null;
     };
-    /** Format: int32 */
-    ApplicationCommandTypes: 1 | 2 | 3;
     ApplicationCommandUserOption: {
       /**
        * Format: int32
@@ -1581,6 +1581,7 @@ export interface components {
       role_subscription_data?: null | components["schemas"]["MessageRoleSubscriptionDataResponse"];
       /** Format: int32 */
       position?: number | null;
+      resolved?: null | components["schemas"]["ResolvedObjectsResponse"];
     };
     BlockMessageAction: {
       /**
@@ -1669,13 +1670,18 @@ export interface components {
       min_values?: number | null;
       max_values?: number | null;
       disabled?: boolean | null;
+      default_values?: components["schemas"]["ChannelSelectDefaultValue"][] | null;
       channel_types?: components["schemas"]["ChannelTypes"][] | null;
+    };
+    ChannelSelectDefaultValue: {
+      type: components["schemas"]["SnowflakeSelectDefaultValueTypes"];
+      id: components["schemas"]["SnowflakeType"];
     };
     /** Format: int32 */
     ChannelTypes: 1 | 3 | 0 | 2 | 4 | 5 | 10 | 11 | 12 | 13 | 14 | 15;
     CommandPermissionResponse: {
       id: components["schemas"]["SnowflakeType"];
-      type: components["schemas"]["ApplicationCommandPermissionTypes"];
+      type: components["schemas"]["ApplicationCommandPermissionType"];
       permission: boolean;
     };
     CommandPermissionsResponse: {
@@ -2020,6 +2026,7 @@ export interface components {
       user_count?: number | null;
       privacy_level: components["schemas"]["GuildScheduledEventPrivacyLevels"];
       user_rsvp?: null | components["schemas"]["ScheduledEventUserResponse"];
+      auto_start: boolean;
       entity_metadata: components["schemas"]["EntityMetadataExternalResponse"];
     };
     FlagToChannelAction: {
@@ -2063,10 +2070,10 @@ export interface components {
       created_at?: string | null;
       /** Format: date-time */
       expires_at?: string | null;
-      channel?: null | components["schemas"]["InviteChannelResponse"];
-      is_contact?: boolean | null;
       /** Format: int32 */
       friends_count?: number | null;
+      channel?: null | components["schemas"]["InviteChannelResponse"];
+      is_contact?: boolean | null;
       /** Format: int32 */
       uses?: number | null;
       /** Format: int32 */
@@ -2995,6 +3002,7 @@ export interface components {
       min_values?: number | null;
       max_values?: number | null;
       disabled?: boolean | null;
+      default_values?: unknown[] | null;
     };
     MessageActivityResponse: Record<string, never>;
     MessageAllowedMentionsRequest: {
@@ -3295,6 +3303,7 @@ export interface components {
       role_subscription_data?: null | components["schemas"]["MessageRoleSubscriptionDataResponse"];
       /** Format: int32 */
       position?: number | null;
+      resolved?: null | components["schemas"]["ResolvedObjectsResponse"];
       reactions?: components["schemas"]["MessageReactionResponse"][] | null;
       referenced_message?: null | components["schemas"]["BasicMessageResponse"];
     };
@@ -3535,6 +3544,20 @@ export interface components {
       message_id: components["schemas"]["SnowflakeType"];
       fail_if_not_exists?: boolean | null;
     };
+    ResolvedObjectsResponse: {
+      users: {
+        [key: string]: components["schemas"]["UserResponse"];
+      };
+      members: {
+        [key: string]: components["schemas"]["GuildMemberResponse"];
+      };
+      channels: {
+        [key: string]: components["schemas"]["GuildChannelResponse"] | components["schemas"]["PrivateChannelResponse"] | components["schemas"]["PrivateGroupChannelResponse"] | components["schemas"]["ThreadResponse"];
+      };
+      roles: {
+        [key: string]: components["schemas"]["GuildRoleResponse"];
+      };
+    };
     ResourceChannelResponse: {
       channel_id: components["schemas"]["SnowflakeType"];
       title: string;
@@ -3610,6 +3633,11 @@ export interface components {
       min_values?: number | null;
       max_values?: number | null;
       disabled?: boolean | null;
+      default_values?: components["schemas"]["RoleSelectDefaultValue"][] | null;
+    };
+    RoleSelectDefaultValue: {
+      type: components["schemas"]["SnowflakeSelectDefaultValueTypes"];
+      id: components["schemas"]["SnowflakeType"];
     };
     ScheduledEventResponse: {
       id: components["schemas"]["SnowflakeType"];
@@ -3631,6 +3659,7 @@ export interface components {
       user_count?: number | null;
       privacy_level: components["schemas"]["GuildScheduledEventPrivacyLevels"];
       user_rsvp?: null | components["schemas"]["ScheduledEventUserResponse"];
+      auto_start: boolean;
     };
     ScheduledEventUserResponse: {
       guild_scheduled_event_id: components["schemas"]["SnowflakeType"];
@@ -3664,6 +3693,7 @@ export interface components {
       icon_url?: string | null;
       attachments?: components["schemas"]["WebhookSlackEmbed"][] | null;
     };
+    SnowflakeSelectDefaultValueTypes: never;
     /** Format: snowflake */
     SnowflakeType: string;
     SpamLinkRuleResponse: {
@@ -3750,6 +3780,7 @@ export interface components {
       user_count?: number | null;
       privacy_level: components["schemas"]["GuildScheduledEventPrivacyLevels"];
       user_rsvp?: null | components["schemas"]["ScheduledEventUserResponse"];
+      auto_start: boolean;
       entity_metadata?: null | components["schemas"]["EntityMetadataStageInstanceResponse"];
     };
     StandardStickerResponse: {
@@ -4026,6 +4057,11 @@ export interface components {
       min_values?: number | null;
       max_values?: number | null;
       disabled?: boolean | null;
+      default_values?: components["schemas"]["UserSelectDefaultValue"][] | null;
+    };
+    UserSelectDefaultValue: {
+      type: components["schemas"]["SnowflakeSelectDefaultValueTypes"];
+      id: components["schemas"]["SnowflakeType"];
     };
     VanityURLErrorResponse: {
       message: string;
@@ -4104,6 +4140,7 @@ export interface components {
       user_count?: number | null;
       privacy_level: components["schemas"]["GuildScheduledEventPrivacyLevels"];
       user_rsvp?: null | components["schemas"]["ScheduledEventUserResponse"];
+      auto_start: boolean;
       entity_metadata?: null | components["schemas"]["EntityMetadataVoiceResponse"];
     };
     WebhookSlackEmbed: {
@@ -4795,7 +4832,7 @@ export interface operations {
             options?: ((components["schemas"]["ApplicationCommandAttachmentOption"] | components["schemas"]["ApplicationCommandBooleanOption"] | components["schemas"]["ApplicationCommandChannelOption"] | components["schemas"]["ApplicationCommandIntegerOption"] | components["schemas"]["ApplicationCommandMentionableOption"] | components["schemas"]["ApplicationCommandNumberOption"] | components["schemas"]["ApplicationCommandRoleOption"] | components["schemas"]["ApplicationCommandStringOption"] | components["schemas"]["ApplicationCommandSubcommandGroupOption"] | components["schemas"]["ApplicationCommandSubcommandOption"] | components["schemas"]["ApplicationCommandUserOption"])[]) | null;
             default_member_permissions?: number | null;
             dm_permission?: boolean | null;
-            type: components["schemas"]["ApplicationCommandTypes"];
+            type: components["schemas"]["ApplicationCommandApplicationCommandType"];
           })[];
       };
     };
@@ -4830,7 +4867,7 @@ export interface operations {
           options?: ((components["schemas"]["ApplicationCommandAttachmentOption"] | components["schemas"]["ApplicationCommandBooleanOption"] | components["schemas"]["ApplicationCommandChannelOption"] | components["schemas"]["ApplicationCommandIntegerOption"] | components["schemas"]["ApplicationCommandMentionableOption"] | components["schemas"]["ApplicationCommandNumberOption"] | components["schemas"]["ApplicationCommandRoleOption"] | components["schemas"]["ApplicationCommandStringOption"] | components["schemas"]["ApplicationCommandSubcommandGroupOption"] | components["schemas"]["ApplicationCommandSubcommandOption"] | components["schemas"]["ApplicationCommandUserOption"])[]) | null;
           default_member_permissions?: number | null;
           dm_permission?: boolean | null;
-          type: components["schemas"]["ApplicationCommandTypes"];
+          type: components["schemas"]["ApplicationCommandApplicationCommandType"];
         };
       };
     };
@@ -5433,7 +5470,7 @@ export interface operations {
             options?: ((components["schemas"]["ApplicationCommandAttachmentOption"] | components["schemas"]["ApplicationCommandBooleanOption"] | components["schemas"]["ApplicationCommandChannelOption"] | components["schemas"]["ApplicationCommandIntegerOption"] | components["schemas"]["ApplicationCommandMentionableOption"] | components["schemas"]["ApplicationCommandNumberOption"] | components["schemas"]["ApplicationCommandRoleOption"] | components["schemas"]["ApplicationCommandStringOption"] | components["schemas"]["ApplicationCommandSubcommandGroupOption"] | components["schemas"]["ApplicationCommandSubcommandOption"] | components["schemas"]["ApplicationCommandUserOption"])[]) | null;
             default_member_permissions?: number | null;
             dm_permission?: boolean | null;
-            type: components["schemas"]["ApplicationCommandTypes"];
+            type: components["schemas"]["ApplicationCommandApplicationCommandType"];
           })[];
       };
     };
@@ -5467,7 +5504,7 @@ export interface operations {
           options?: ((components["schemas"]["ApplicationCommandAttachmentOption"] | components["schemas"]["ApplicationCommandBooleanOption"] | components["schemas"]["ApplicationCommandChannelOption"] | components["schemas"]["ApplicationCommandIntegerOption"] | components["schemas"]["ApplicationCommandMentionableOption"] | components["schemas"]["ApplicationCommandNumberOption"] | components["schemas"]["ApplicationCommandRoleOption"] | components["schemas"]["ApplicationCommandStringOption"] | components["schemas"]["ApplicationCommandSubcommandGroupOption"] | components["schemas"]["ApplicationCommandSubcommandOption"] | components["schemas"]["ApplicationCommandUserOption"])[]) | null;
           default_member_permissions?: number | null;
           dm_permission?: boolean | null;
-          type: components["schemas"]["ApplicationCommandTypes"];
+          type: components["schemas"]["ApplicationCommandApplicationCommandType"];
         };
       };
     };
@@ -6626,6 +6663,64 @@ export interface operations {
       "4XX": components["responses"]["ClientErrorResponse"];
     };
   };
+  list_guild_stickers: {
+    parameters: {
+      path: {
+        guild_id: components["schemas"]["SnowflakeType"];
+      };
+    };
+    responses: {
+      /** @description 200 response for list_guild_stickers */
+      200: {
+        content: {
+          "application/json": components["schemas"]["GuildStickerResponse"][];
+        };
+      };
+      "4XX": components["responses"]["ClientErrorResponse"];
+    };
+  };
+  create_guild_sticker: {
+    parameters: {
+      path: {
+        guild_id: components["schemas"]["SnowflakeType"];
+      };
+    };
+    requestBody: {
+      content: {
+        "multipart/form-data": {
+          name: string;
+          tags: string;
+          description?: string | null;
+          file: string;
+        };
+      };
+    };
+    responses: {
+      /** @description 201 response for create_guild_sticker */
+      201: {
+        content: {
+          "application/json": components["schemas"]["GuildStickerResponse"];
+        };
+      };
+      "4XX": components["responses"]["ClientErrorResponse"];
+    };
+  };
+  get_guild_webhooks: {
+    parameters: {
+      path: {
+        guild_id: components["schemas"]["SnowflakeType"];
+      };
+    };
+    responses: {
+      /** @description 200 response for get_guild_webhooks */
+      200: {
+        content: {
+          "application/json": ((components["schemas"]["ApplicationIncomingWebhookResponse"] | components["schemas"]["ChannelFollowerWebhookResponse"] | components["schemas"]["GuildIncomingWebhookResponse"])[]) | null;
+        };
+      };
+      "4XX": components["responses"]["ClientErrorResponse"];
+    };
+  };
   list_guild_channels: {
     parameters: {
       path: {
@@ -6684,64 +6779,6 @@ export interface operations {
       /** @description 204 response for bulk_update_guild_channels */
       204: {
         content: never;
-      };
-      "4XX": components["responses"]["ClientErrorResponse"];
-    };
-  };
-  list_guild_stickers: {
-    parameters: {
-      path: {
-        guild_id: components["schemas"]["SnowflakeType"];
-      };
-    };
-    responses: {
-      /** @description 200 response for list_guild_stickers */
-      200: {
-        content: {
-          "application/json": components["schemas"]["GuildStickerResponse"][];
-        };
-      };
-      "4XX": components["responses"]["ClientErrorResponse"];
-    };
-  };
-  create_guild_sticker: {
-    parameters: {
-      path: {
-        guild_id: components["schemas"]["SnowflakeType"];
-      };
-    };
-    requestBody: {
-      content: {
-        "multipart/form-data": {
-          name: string;
-          tags: string;
-          description?: string | null;
-          file: string;
-        };
-      };
-    };
-    responses: {
-      /** @description 201 response for create_guild_sticker */
-      201: {
-        content: {
-          "application/json": components["schemas"]["GuildStickerResponse"];
-        };
-      };
-      "4XX": components["responses"]["ClientErrorResponse"];
-    };
-  };
-  get_guild_webhooks: {
-    parameters: {
-      path: {
-        guild_id: components["schemas"]["SnowflakeType"];
-      };
-    };
-    responses: {
-      /** @description 200 response for get_guild_webhooks */
-      200: {
-        content: {
-          "application/json": ((components["schemas"]["ApplicationIncomingWebhookResponse"] | components["schemas"]["ChannelFollowerWebhookResponse"] | components["schemas"]["GuildIncomingWebhookResponse"])[]) | null;
-        };
       };
       "4XX": components["responses"]["ClientErrorResponse"];
     };
@@ -7491,59 +7528,6 @@ export interface operations {
       "4XX": components["responses"]["ClientErrorResponse"];
     };
   };
-  get_channel: {
-    parameters: {
-      path: {
-        channel_id: components["schemas"]["SnowflakeType"];
-      };
-    };
-    responses: {
-      /** @description 200 response for get_channel */
-      200: {
-        content: {
-          "application/json": components["schemas"]["GuildChannelResponse"] | components["schemas"]["PrivateChannelResponse"] | components["schemas"]["PrivateGroupChannelResponse"] | components["schemas"]["ThreadResponse"];
-        };
-      };
-      "4XX": components["responses"]["ClientErrorResponse"];
-    };
-  };
-  delete_channel: {
-    parameters: {
-      path: {
-        channel_id: components["schemas"]["SnowflakeType"];
-      };
-    };
-    responses: {
-      /** @description 200 response for delete_channel */
-      200: {
-        content: {
-          "application/json": components["schemas"]["GuildChannelResponse"] | components["schemas"]["PrivateChannelResponse"] | components["schemas"]["PrivateGroupChannelResponse"] | components["schemas"]["ThreadResponse"];
-        };
-      };
-      "4XX": components["responses"]["ClientErrorResponse"];
-    };
-  };
-  update_channel: {
-    parameters: {
-      path: {
-        channel_id: components["schemas"]["SnowflakeType"];
-      };
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["PrivateChannelRequestPartial"] | components["schemas"]["UpdateGuildChannelRequestPartial"] | components["schemas"]["UpdateThreadRequestPartial"];
-      };
-    };
-    responses: {
-      /** @description 200 response for update_channel */
-      200: {
-        content: {
-          "application/json": components["schemas"]["GuildChannelResponse"] | components["schemas"]["PrivateChannelResponse"] | components["schemas"]["PrivateGroupChannelResponse"] | components["schemas"]["ThreadResponse"];
-        };
-      };
-      "4XX": components["responses"]["ClientErrorResponse"];
-    };
-  };
   get_sticker: {
     parameters: {
       path: {
@@ -7610,6 +7594,59 @@ export interface operations {
       200: {
         content: {
           "application/json": components["schemas"]["ApplicationIncomingWebhookResponse"] | components["schemas"]["ChannelFollowerWebhookResponse"] | components["schemas"]["GuildIncomingWebhookResponse"];
+        };
+      };
+      "4XX": components["responses"]["ClientErrorResponse"];
+    };
+  };
+  get_channel: {
+    parameters: {
+      path: {
+        channel_id: components["schemas"]["SnowflakeType"];
+      };
+    };
+    responses: {
+      /** @description 200 response for get_channel */
+      200: {
+        content: {
+          "application/json": components["schemas"]["GuildChannelResponse"] | components["schemas"]["PrivateChannelResponse"] | components["schemas"]["PrivateGroupChannelResponse"] | components["schemas"]["ThreadResponse"];
+        };
+      };
+      "4XX": components["responses"]["ClientErrorResponse"];
+    };
+  };
+  delete_channel: {
+    parameters: {
+      path: {
+        channel_id: components["schemas"]["SnowflakeType"];
+      };
+    };
+    responses: {
+      /** @description 200 response for delete_channel */
+      200: {
+        content: {
+          "application/json": components["schemas"]["GuildChannelResponse"] | components["schemas"]["PrivateChannelResponse"] | components["schemas"]["PrivateGroupChannelResponse"] | components["schemas"]["ThreadResponse"];
+        };
+      };
+      "4XX": components["responses"]["ClientErrorResponse"];
+    };
+  };
+  update_channel: {
+    parameters: {
+      path: {
+        channel_id: components["schemas"]["SnowflakeType"];
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["PrivateChannelRequestPartial"] | components["schemas"]["UpdateGuildChannelRequestPartial"] | components["schemas"]["UpdateThreadRequestPartial"];
+      };
+    };
+    responses: {
+      /** @description 200 response for update_channel */
+      200: {
+        content: {
+          "application/json": components["schemas"]["GuildChannelResponse"] | components["schemas"]["PrivateChannelResponse"] | components["schemas"]["PrivateGroupChannelResponse"] | components["schemas"]["ThreadResponse"];
         };
       };
       "4XX": components["responses"]["ClientErrorResponse"];
