@@ -25,6 +25,7 @@ export abstract class Interaction {
 
   constructor(interaction: any) {
     snakeCaseKeys(interaction, this);
+    snakeCaseKeys(interaction.data, this.data);
     this.interactionResolved = new Promise((resolve, reject) => {
       this.resolve = resolve;
       this.reject = reject;

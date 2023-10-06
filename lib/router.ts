@@ -1,4 +1,5 @@
-import { Interaction } from ".";
+import { Interaction } from "./interactions/interaction";
+import { MessageComponentInteraction } from "./interactions/message_component_interaction";
 import { AutocompleteInteraction } from "./interactions/autocomplete_interaction";
 import { SlashInteraction } from "./interactions/slash_interaction";
 
@@ -21,7 +22,9 @@ export class Router implements OnInteraction {
       const controllerName = controller.name
         .toLowerCase()
         .replace(/controller$/, "");
-      return interaction?.data?.name === controllerName;
+      const interactionName =
+        interaction?.data?.name || interaction?.message?.interaction?.name;
+      return interactionName === controllerName;
     });
     if (!controllerClass) return undefined;
     this.controllerInstance = new controllerClass();
@@ -34,7 +37,7 @@ export class Router implements OnInteraction {
         return this.createRoute("message");
       }
     } else if (interaction.type === 3) {
-      this.createRoute("messageComponent");
+      return this.createRoute("messageComponent", MessageComponentInteraction);
     } else if (interaction.type === 4) {
       return this.createRoute("autocomplete", AutocompleteInteraction);
     } else if (interaction.type === 5) {

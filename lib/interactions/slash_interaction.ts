@@ -136,12 +136,11 @@ export class SlashInteraction<
     return mappedOptions;
   }
 
-  respondWith(response: string | number | MessageParams) {
+  respondWith(response: string | number | Omit<MessageParams, "update">) {
     let type = 4;
     let data: any = {};
     if (typeof response === "object") {
       const message = new Message(response);
-      type = message.update ? 7 : 4;
       data = message["toComponent"]();
     } else {
       data = { content: response.toString() };

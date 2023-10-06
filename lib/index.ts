@@ -5,6 +5,7 @@ export { Blurp, b } from "./blurp";
 export { Interaction } from "./interactions/interaction";
 export { SlashInteraction } from "./interactions/slash_interaction";
 export { AutocompleteInteraction } from "./interactions/autocomplete_interaction";
+export { MessageComponentInteraction } from "./interactions/message_component_interaction";
 
 export type * from "./api";
 export type { OnInteraction } from "./router";
