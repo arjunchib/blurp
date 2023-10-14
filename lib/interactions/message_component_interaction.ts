@@ -11,7 +11,7 @@ import { SelectOption } from "../types/components/selects/select";
 export interface MessageComponentInteractionData {
   customId: string;
   componentType: ComponentType;
-  values?: SelectOption[];
+  values?: string[];
   resolved?: any;
 }
 

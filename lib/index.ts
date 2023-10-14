@@ -6,6 +6,7 @@ export { Interaction } from "./interactions/interaction";
 export { SlashInteraction } from "./interactions/slash_interaction";
 export { AutocompleteInteraction } from "./interactions/autocomplete_interaction";
 export { MessageComponentInteraction } from "./interactions/message_component_interaction";
+export { ComponentType } from "./types/components/component_type";
 
 export type * from "./api";
 export type { OnInteraction } from "./router";
@@ -27,3 +28,4 @@ export type {
 export type { StringOption } from "./types/options/string_option";
 export type { SubCommandGroupOption } from "./types/options/sub_command_group_option";
 export type { SubCommandOption } from "./types/options/sub_command_option";
+export type { Embed } from "./types/responses/embed";

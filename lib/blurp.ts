@@ -149,7 +149,7 @@ export class Blurp {
     return new TextInput(params);
   }
 
-  textSelect(params: StringSelectParams) {
+  stringSelect(params: StringSelectParams) {
     return new StringSelect(params);
   }
 

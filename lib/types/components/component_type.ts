@@ -1,8 +1,8 @@
 export enum ComponentType {
   /** Container for other components */
-  ActionRow,
+  ActionRow = 1,
   /** Button object */
-  ButtonButton,
+  Button,
   /** Select menu for picking from defined text options */
   StringSelect,
   /** Text input object */
